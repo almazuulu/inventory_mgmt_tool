@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  warehouse-tool:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: warehouse-tool:latest
+    container_name: warehouse-inventory-tool
+    stdin_open: true
+    tty: true
+    volumes:
+      # Mount local directory for persistent state
+      - ./warehouse_data:/app/data
+    environment:
+      # Configure the state file location
+      - WAREHOUSE_FILE=/app/data/warehouse_state.json
+    # For interactive use
+    command: []
+    
+  # Alternative service for running with a command file
+  warehouse-tool-batch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: warehouse-tool:latest
+    container_name: warehouse-inventory-tool-batch
+    stdin_open: true
+    volumes:
+      - ./warehouse_data:/app/data
+      - ./example_commands.txt:/app/commands.txt:ro
+    environment:
+      - WAREHOUSE_FILE=/app/data/warehouse_state.json
+    command: sh -c "cat /app/commands.txt | python -m src.main"
+    profiles:
+      - batch
+

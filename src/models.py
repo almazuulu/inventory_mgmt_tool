@@ -67,4 +67,57 @@ class Location:
             return self.inventory[item_id].quantity
         return 0
     
+    def add_item(self, item_id: str, quantity: int) -> None:
+        """Add or increment item quantity in location."""
+        if item_id in self.inventory:
+            self.inventory[item_id].quantity += quantity
+        else:
+            self.inventory[item_id] = InventoryItem(item_id=item_id, quantity=quantity)
     
+    def remove_item(self, item_id: str, quantity: int) -> None:
+        """Remove or decrement item quantity from location.
+        
+        Raises:
+            KeyError: If item doesn't exist in location
+            ValueError: If quantity to remove exceeds available quantity
+        """
+        if item_id not in self.inventory:
+            raise KeyError(f"Item '{item_id}' not found in location '{self.location_id}'")
+        
+        current_quantity = self.inventory[item_id].quantity
+        if quantity > current_quantity:
+            raise ValueError(
+                f"Insufficient quantity: trying to remove {quantity}, "
+                f"but only {current_quantity} available"
+            )
+        
+        new_quantity = current_quantity - quantity
+        if new_quantity == 0:
+            del self.inventory[item_id]
+        else:
+            self.inventory[item_id].quantity = new_quantity
+    
+    def get_sorted_items(self) -> list[InventoryItem]:
+        """Get list of items sorted alphabetically by item_id."""
+        return sorted(self.inventory.values(), key=lambda item: item.item_id)
+    
+    def to_dict(self) -> dict:
+        """Convert to dictionary for serialization."""
+        return {
+            "location_id": self.location_id,
+            "inventory": {
+                item_id: item.to_dict() 
+                for item_id, item in self.inventory.items()
+            }
+        }
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> "Location":
+        """Create Location from dictionary."""
+        location = cls(location_id=data["location_id"])
+        location.inventory = {
+            item_id: InventoryItem.from_dict(item_data)
+            for item_id, item_data in data.get("inventory", {}).items()
+        }
+        return location
+

@@ -1,18 +1,7 @@
 """Command controller for parsing and executing warehouse operations."""
 
-from typing import Optional
-
 from src.config import ERR_PREFIX, MSG_EMPTY, MSG_OK
-from src.exceptions import (
-    InsufficientQuantityError,
-    InvalidCommandError,
-    ItemNotFoundError,
-    LocationAlreadyExistsError,
-    LocationHasInventoryError,
-    LocationNotFoundError,
-    StorageError,
-    WarehouseError,
-)
+from src.exceptions import InvalidCommandError, WarehouseError
 from src.service import WarehouseService
 
 
@@ -70,7 +59,7 @@ class WarehouseController:
             return self._format_error(str(e))
         except ValueError as e:
             return self._format_error(str(e))
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             return self._format_error(f"Unexpected error: {e}")
     
     def _handle_location_command(self, operation: str, args: list) -> str:
@@ -200,8 +189,10 @@ class WarehouseController:
             if quantity <= 0:
                 raise InvalidCommandError("Quantity must be a positive integer")
             return quantity
-        except ValueError:
-            raise InvalidCommandError(f"Invalid quantity: '{qty_str}' is not an integer")
+        except ValueError as exc:
+            raise InvalidCommandError(
+                f"Invalid quantity: '{qty_str}' is not an integer"
+            ) from exc
     
     def _format_observe_response(self, items: list) -> str:
         """Format OBSERVE command response.
@@ -210,14 +201,18 @@ class WarehouseController:
             items: List of InventoryItem objects
             
         Returns:
-            Formatted string: "EMPTY" or comma-separated "item_id qty, ..." list
+            Formatted string:
+            - "EMPTY" if no items
+            - otherwise multi-line output, one line per item:
+              "ITEM <item_id> <qty>"
         """
         if not items:
             return MSG_EMPTY
-        
-        # Format as: "item1 10, item2 5, item3 3"
-        item_strings = [f"{item.item_id} {item.quantity}" for item in items]
-        return ", ".join(item_strings)
+
+        # PDF spec: one line per item, sorted by item_id
+        sorted_items = sorted(items, key=lambda item: item.item_id)
+        lines = [f"ITEM {item.item_id} {item.quantity}" for item in sorted_items]
+        return "\n".join(lines)
     
     def _format_error(self, message: str) -> str:
         """Format error message with ERR prefix.

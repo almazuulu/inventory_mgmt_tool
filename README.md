@@ -183,8 +183,14 @@ src/
 # Install dev dependencies
 pip install -e ".[dev]"
 
-# Run tests
+#
+# Testing
+#
+# Run tests (uses pytest config from pyproject.toml, including coverage)
 pytest
+
+# Or run via Makefile (coverage in terminal + html report)
+make test
 
 # Format & lint
 black src tests

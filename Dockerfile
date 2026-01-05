@@ -51,3 +51,4 @@ ENTRYPOINT ["python", "-m", "src.main"]
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD python -c "import src.main" || exit 1
 
+

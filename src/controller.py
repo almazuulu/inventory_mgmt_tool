@@ -230,3 +230,4 @@ class WarehouseController:
         """
         return f"{ERR_PREFIX}: {message}"
 
+

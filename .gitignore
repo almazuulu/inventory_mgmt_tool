@@ -205,3 +205,18 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Warehouse Inventory Management Tool
+# State files and data directories
+warehouse_state.json
+warehouse_data/
+*.json.lock
+data/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Docker volumes
+docker-data/

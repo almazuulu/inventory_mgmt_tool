@@ -1,0 +1,51 @@
+# Example commands for Warehouse Inventory Management Tool
+# Lines starting with # are ignored by the tool (just pass through as empty)
+
+# Register some locations
+LOCATION REGISTER WH1
+LOCATION REGISTER WH2
+LOCATION REGISTER WH3
+
+# Add inventory to WH1
+INVENTORY INCREMENT WH1 ITEM001 100
+INVENTORY INCREMENT WH1 ITEM002 50
+INVENTORY INCREMENT WH1 ITEM003 75
+
+# Add inventory to WH2
+INVENTORY INCREMENT WH2 ITEM001 200
+INVENTORY INCREMENT WH2 ITEM004 30
+
+# Check inventory at WH1
+INVENTORY OBSERVE WH1
+
+# Check inventory at WH2
+INVENTORY OBSERVE WH2
+
+# Transfer items from WH1 to WH2
+INVENTORY TRANSFER WH1 WH2 ITEM001 50
+INVENTORY TRANSFER WH1 WH3 ITEM002 25
+
+# Decrement some inventory
+INVENTORY DECREMENT WH1 ITEM003 25
+
+# Final inventory observations
+INVENTORY OBSERVE WH1
+INVENTORY OBSERVE WH2
+INVENTORY OBSERVE WH3
+
+# Try to unregister a location with inventory (should fail)
+LOCATION UNREGISTER WH1
+
+# Remove remaining inventory
+INVENTORY DECREMENT WH1 ITEM001 50
+INVENTORY DECREMENT WH1 ITEM002 25
+INVENTORY DECREMENT WH1 ITEM003 50
+
+# Now unregister should work
+LOCATION UNREGISTER WH1
+
+# Check final state
+INVENTORY OBSERVE WH2
+INVENTORY OBSERVE WH3
+
+

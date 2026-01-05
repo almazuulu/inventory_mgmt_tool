@@ -2,6 +2,29 @@
 
 CLI tool for managing warehouse locations and inventory with concurrent access support.
 
+## Project Description
+
+This is a **location and inventory management tool** designed for warehouse operations. The tool provides a command-line interface for managing warehouse locations and tracking inventory items across those locations.
+
+**Key Features:**
+- **Location Management**: Register and deregister warehouse locations (e.g., "LA", "NYC", "TOKYO")
+- **Inventory Operations**: Increment, decrement, and transfer items between locations
+- **State Persistence**: All operations are persisted to a JSON file, ensuring data durability
+- **Concurrent Access**: Supports multiple instances running simultaneously with file-based locking
+- **Simple CLI**: Reads commands from stdin and outputs results to stdout, making it easy to script and integrate
+
+The tool is designed to handle real-world warehouse scenarios where inventory needs to be tracked across multiple locations, with operations that can be performed concurrently by different processes or users.
+
+## About
+
+This project is a small **command-line inventory management tool** for a warehouse. It lets you:
+
+- **Create/remove locations**: `LOCATION REGISTER`, `LOCATION UNREGISTER` (only if the location is empty)
+- **Manage stock**: `INVENTORY INCREMENT`, `INVENTORY DECREMENT`, `INVENTORY TRANSFER`
+- **Inspect stock**: `INVENTORY OBSERVE` prints `EMPTY` or a sorted list of `ITEM <item_id> <qty>` lines
+
+State is persisted to a JSON file (see `WAREHOUSE_FILE`) and guarded with a file lock to support concurrent access.
+
 ## Quick Start
 
 ### Python (venv)
